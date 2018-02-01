@@ -12,6 +12,8 @@
 		2DA7A700201977F0004BB61F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DA7A6FE201977F0004BB61F /* Main.storyboard */; };
 		2DA7A702201977F0004BB61F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2DA7A701201977F0004BB61F /* Assets.xcassets */; };
 		2DA7A705201977F0004BB61F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DA7A703201977F0004BB61F /* LaunchScreen.storyboard */; };
+		69D6034F42C092B9B78C2137 /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D60ADBBED043BE7EB7D9E1 /* LineChart.swift */; };
+		69D6071253636103AEDB030D /* LineChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D60F84E3EE8F38A78180A1 /* LineChartCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		2DA7A701201977F0004BB61F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2DA7A704201977F0004BB61F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2DA7A706201977F0004BB61F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		69D60ADBBED043BE7EB7D9E1 /* LineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
+		69D60F84E3EE8F38A78180A1 /* LineChartCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChartCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +64,8 @@
 				2DA7A701201977F0004BB61F /* Assets.xcassets */,
 				2DA7A703201977F0004BB61F /* LaunchScreen.storyboard */,
 				2DA7A706201977F0004BB61F /* Info.plist */,
+				69D60F84E3EE8F38A78180A1 /* LineChartCell.swift */,
+				69D60ADBBED043BE7EB7D9E1 /* LineChart.swift */,
 			);
 			path = "swift-line-chart-demo";
 			sourceTree = "<group>";
@@ -138,6 +144,8 @@
 			files = (
 				2DA7A6FD201977F0004BB61F /* ViewController.swift in Sources */,
 				2DA7A6FB201977F0004BB61F /* AppDelegate.swift in Sources */,
+				69D6071253636103AEDB030D /* LineChartCell.swift in Sources */,
+				69D6034F42C092B9B78C2137 /* LineChart.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
