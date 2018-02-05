@@ -77,7 +77,12 @@ extension LineChart: UICollectionViewDataSource, UICollectionViewDelegateFlowLay
     let start = max(0, indexPath.row * chunkSize - 1)
 
     cell.maxValue = maxValue
+    cell.yLabels = Array(start...start+chunkSize)
     cell.values = lines.mapValues { values -> [Float] in
+      if start >= values.count {
+        return []
+      }
+
       return Array(values.suffix(from: start).prefix(chunkSize + (start == 0 ? 0 : 1)))
     }
 
