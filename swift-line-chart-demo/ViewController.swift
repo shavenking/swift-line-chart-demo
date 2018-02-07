@@ -23,12 +23,10 @@ class ViewController: UIViewController {
     for _ in stride(from: 0, to: 2, by: 1) {
       var values = [Float]()
       for _ in stride(from: 0, to: arc4random_uniform(1000), by: 1) {
-        values.append(Float(arc4random_uniform(10000)))
+        values.append(Float([1,2,3,4,5,6,7,8,9,10][Int(arc4random_uniform(10))]))
       }
       lineChart.addLine(values: values)
     }
-    lineChart.addLine(values: [1,46,6,10])
-    lineChart.addLine(values: [1,10,6,46,1,46,10,1])
     lineChart.chunkSize = 3
     lineChart.reloadData()
   }
