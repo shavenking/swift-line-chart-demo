@@ -45,6 +45,7 @@ class LineChart: UICollectionView {
     dataSource = self
     delegate = self
     register(LineChartCell.self, forCellWithReuseIdentifier: String(describing: LineChartCell.self))
+    register(LineChartXLabelReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: String(describing: LineChartXLabelReusableView.self))
   }
 
   convenience init(frame: CGRect = .zero) {
@@ -52,6 +53,7 @@ class LineChart: UICollectionView {
     layout.scrollDirection = .horizontal
     layout.minimumInteritemSpacing = 0
     layout.minimumLineSpacing = 0
+    layout.sectionHeadersPinToVisibleBounds = true
     self.init(frame: frame, collectionViewLayout: layout)
   }
 
@@ -91,6 +93,16 @@ extension LineChart: UICollectionViewDataSource, UICollectionViewDelegateFlowLay
 
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     return collectionView.frame.size
+  }
+
+  func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: String(describing: LineChartXLabelReusableView.self), for: indexPath) as! LineChartXLabelReusableView
+    view.values = Array(Set(lines.values.flatMap { $0 }))
+    return view
+  }
+
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    return CGSize(width: 40, height: 100)
   }
 }
 

@@ -20,13 +20,13 @@ class ViewController: UIViewController {
     lineChart.heightAnchor.constraint(equalTo: view.layoutMarginsGuide.heightAnchor).isActive = true
     lineChart.centerYAnchor.constraint(equalTo: view.layoutMarginsGuide.centerYAnchor).isActive = true
     lineChart.centerXAnchor.constraint(equalTo: view.layoutMarginsGuide.centerXAnchor).isActive = true
-//    for _ in stride(from: 0, to: 1, by: 1) {
-//      var values = [Float]()
-//      for _ in stride(from: 0, to: 1000, by: 1) {
-//        values.append(Float(arc4random_uniform(10000)))
-//      }
-//      lineChart.addLine(values: values)
-//    }
+    for _ in stride(from: 0, to: 2, by: 1) {
+      var values = [Float]()
+      for _ in stride(from: 0, to: arc4random_uniform(1000), by: 1) {
+        values.append(Float(arc4random_uniform(10000)))
+      }
+      lineChart.addLine(values: values)
+    }
     lineChart.addLine(values: [1,46,6,10])
     lineChart.addLine(values: [1,10,6,46,1,46,10,1])
     lineChart.chunkSize = 3

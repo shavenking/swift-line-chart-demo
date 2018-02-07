@@ -27,7 +27,7 @@ class LineChartCell: UICollectionViewCell {
     }
 
     let maxCountOfValues = values.maxCountOfValues()
-    let chartRect = UIEdgeInsetsInsetRect(contentView.frame, UIEdgeInsets(top: 0, left: 0, bottom: 40, right: 0))
+    let chartRect = UIEdgeInsetsInsetRect(contentView.frame, UIEdgeInsets(top: 20, left: 0, bottom: 40, right: 0))
 
     let step: (x: CGFloat, y: CGFloat) = (
       x: chartRect.width / CGFloat(maxCountOfValues - 1),
@@ -37,7 +37,7 @@ class LineChartCell: UICollectionViewCell {
     values.forEach { _, values in
       var points = [CGPoint]()
       for (index, value) in values.enumerated() {
-        points.append(CGPoint(x: CGFloat(index) * step.x, y: chartRect.height - CGFloat(value) * step.y))
+        points.append(CGPoint(x: CGFloat(index) * step.x, y: chartRect.height - CGFloat(value) * step.y + 20))
       }
       addPathLayer(points: points)
     }
