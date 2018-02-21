@@ -33,7 +33,7 @@ class LineChart: UICollectionView {
 
   var chunkSize: Int = 10 {
     didSet {
-      if chunkSize <= 1 {
+      if chunkSize < 10 {
         chunkSize = 10
       }
     }
@@ -48,6 +48,16 @@ class LineChart: UICollectionView {
     register(LineChartYLabelReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: String(describing: LineChartYLabelReusableView.self))
     let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(userDidLongPress))
     addGestureRecognizer(longPressGesture)
+
+    let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(userDidZoom))
+    addGestureRecognizer(pinchGesture)
+  }
+
+  @objc func userDidZoom(_ gestureRecognizer: UIPinchGestureRecognizer) {
+    if gestureRecognizer.state == .ended {
+      chunkSize = Int((CGFloat(chunkSize) / gestureRecognizer.scale).rounded(.up))
+      self.reloadData()
+    }
   }
 
   let yPathLayer: CAShapeLayer = {

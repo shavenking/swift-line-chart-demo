@@ -46,6 +46,7 @@ class LineChartCell: UICollectionViewCell {
 
   func drawChart() {
     contentView.layer.sublayers?.forEach { layer in layer.removeFromSuperlayer() }
+    contentView.subviews.forEach { view in view.removeFromSuperview() }
 
     guard !values.isEmpty else {
       return

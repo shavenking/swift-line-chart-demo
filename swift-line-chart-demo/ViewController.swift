@@ -39,7 +39,6 @@ class ViewController: UIViewController {
 
     make(numberOfSequence: 2, maxSize: 1000).forEach { lineChart.addLine(values: $0) }
 
-    lineChart.chunkSize = 7
     lineChart.reloadData()
   }
 }
