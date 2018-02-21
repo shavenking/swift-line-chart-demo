@@ -46,6 +46,38 @@ class LineChart: UICollectionView {
     delegate = self
     register(LineChartCell.self, forCellWithReuseIdentifier: String(describing: LineChartCell.self))
     register(LineChartXLabelReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: String(describing: LineChartXLabelReusableView.self))
+    let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(userDidLongPress))
+    addGestureRecognizer(longPressGesture)
+  }
+
+  let yPathLayer: CAShapeLayer = {
+    let pathLayer = CAShapeLayer()
+    pathLayer.strokeColor = UIColor.white.cgColor
+    pathLayer.fillColor = UIColor.clear.cgColor
+    pathLayer.lineWidth = 1.5
+    pathLayer.lineJoin = kCALineJoinRound
+    pathLayer.lineCap = kCALineCapRound
+    return pathLayer
+  }()
+
+  @objc func userDidLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+    var location = gestureRecognizer.location(in: gestureRecognizer.view)
+    location = CGPoint(x: max(40 + yPathLayer.lineWidth, location.x), y: min(frame.maxY - 40, location.y))
+
+    let path = UIBezierPath()
+    path.move(to: CGPoint(x: location.x, y: 0))
+    path.addLine(to: CGPoint(x: location.x, y: self.frame.maxY - 40))
+    path.move(to: CGPoint(x: contentOffset.x, y: location.y))
+    path.addLine(to: CGPoint(x: contentOffset.x + frame.width, y: location.y))
+    yPathLayer.path = path.cgPath
+
+    if gestureRecognizer.state == .began {
+      self.layer.addSublayer(yPathLayer)
+    }
+
+    if gestureRecognizer.state == .ended {
+      yPathLayer.removeFromSuperlayer()
+    }
   }
 
   convenience init(frame: CGRect = .zero) {
