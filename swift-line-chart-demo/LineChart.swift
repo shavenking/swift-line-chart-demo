@@ -62,7 +62,7 @@ class LineChart: UICollectionView {
 
   @objc func userDidLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     var location = gestureRecognizer.location(in: gestureRecognizer.view)
-    location = CGPoint(x: max(40 + yPathLayer.lineWidth, location.x), y: min(frame.maxY - 40, location.y))
+    location = CGPoint(x: max(contentOffset.x + 40 + yPathLayer.lineWidth, location.x), y: min(frame.maxY - 40, location.y))
 
     let path = UIBezierPath()
     path.move(to: CGPoint(x: location.x, y: 0))
