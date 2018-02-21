@@ -66,6 +66,14 @@ class LineChart: UICollectionView {
     var location = gestureRecognizer.location(in: gestureRecognizer.view)
     location = CGPoint(x: max(contentOffset.x + 40 + yPathLayer.lineWidth, location.x), y: min(frame.maxY - 40, location.y))
 
+    if let indexPath = indexPathForItem(at: gestureRecognizer.location(in: self)), let cell = cellForItem(at: indexPath) as? LineChartCell {
+      if gestureRecognizer.state == .ended {
+        cell.highlightPoint = nil
+      } else {
+        cell.highlightPoint = gestureRecognizer.location(in: cell.contentView)
+      }
+    }
+
     yLabelView?.highlightPoint = location
 
     let path = UIBezierPath()

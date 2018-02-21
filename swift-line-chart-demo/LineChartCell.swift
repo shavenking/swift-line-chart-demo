@@ -19,6 +19,31 @@ class LineChartCell: UICollectionViewCell {
 
   var yLabels = [Int]()
 
+  var highlightPoint: CGPoint? {
+    didSet {
+      if let highlightPoint = highlightPoint {
+        contentView.subviews.forEach {
+          guard let label = $0 as? UILabel else { return }
+
+          if label.frame.contains(CGPoint(x: highlightPoint.x, y: label.center.y)) {
+            label.backgroundColor = .white
+            label.textColor = .black
+          } else {
+            label.backgroundColor = .black
+            label.textColor = .white
+          }
+        }
+      } else {
+        contentView.subviews.forEach {
+          guard let label = $0 as? UILabel else { return }
+
+          label.backgroundColor = .black
+          label.textColor = .white
+        }
+      }
+    }
+  }
+
   func drawChart() {
     contentView.layer.sublayers?.forEach { layer in layer.removeFromSuperlayer() }
 
