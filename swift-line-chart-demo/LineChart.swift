@@ -45,7 +45,7 @@ class LineChart: UICollectionView {
     dataSource = self
     delegate = self
     register(LineChartCell.self, forCellWithReuseIdentifier: String(describing: LineChartCell.self))
-    register(LineChartXLabelReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: String(describing: LineChartXLabelReusableView.self))
+    register(LineChartYLabelReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: String(describing: LineChartYLabelReusableView.self))
     let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(userDidLongPress))
     addGestureRecognizer(longPressGesture)
   }
@@ -60,9 +60,13 @@ class LineChart: UICollectionView {
     return pathLayer
   }()
 
+  var yLabelView: LineChartYLabelReusableView?
+
   @objc func userDidLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     var location = gestureRecognizer.location(in: gestureRecognizer.view)
     location = CGPoint(x: max(contentOffset.x + 40 + yPathLayer.lineWidth, location.x), y: min(frame.maxY - 40, location.y))
+
+    yLabelView?.highlightPoint = location
 
     let path = UIBezierPath()
     path.move(to: CGPoint(x: location.x, y: 0))
@@ -77,6 +81,7 @@ class LineChart: UICollectionView {
 
     if gestureRecognizer.state == .ended {
       yPathLayer.removeFromSuperlayer()
+      yLabelView?.highlightPoint = nil
     }
   }
 
@@ -128,8 +133,9 @@ extension LineChart: UICollectionViewDataSource, UICollectionViewDelegateFlowLay
   }
 
   func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-    let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: String(describing: LineChartXLabelReusableView.self), for: indexPath) as! LineChartXLabelReusableView
+    let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: String(describing: LineChartYLabelReusableView.self), for: indexPath) as! LineChartYLabelReusableView
     view.values = Array(Set(lines.values.flatMap { $0 }))
+    yLabelView = view
     return view
   }
 

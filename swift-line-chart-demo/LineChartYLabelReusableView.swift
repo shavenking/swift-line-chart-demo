@@ -1,6 +1,6 @@
 import UIKit
 
-class LineChartXLabelReusableView: UICollectionReusableView {
+class LineChartYLabelReusableView: UICollectionReusableView {
   var values: [Float]? {
     didSet {
       guard let values = values?.sorted(), !values.isEmpty else {
@@ -22,6 +22,27 @@ class LineChartXLabelReusableView: UICollectionReusableView {
         if label.frame.maxY <= minimumPosition {
           addSubview(label)
           minimumPosition -= label.frame.height + 8
+        }
+      }
+    }
+  }
+
+  var highlightPoint: CGPoint? {
+    didSet {
+      if let highlightPoint = highlightPoint {
+        subviews.forEach {
+          if $0.frame.contains(CGPoint(x: $0.center.x, y: highlightPoint.y)) {
+            $0.backgroundColor = .white
+            ($0 as? UILabel)?.textColor = .black
+          } else {
+            $0.backgroundColor = .black
+            ($0 as? UILabel)?.textColor = .white
+          }
+        }
+      } else {
+        subviews.forEach {
+          $0.backgroundColor = .black
+          ($0 as? UILabel)?.textColor = .white
         }
       }
     }
