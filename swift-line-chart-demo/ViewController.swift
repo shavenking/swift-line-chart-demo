@@ -1,10 +1,6 @@
 import UIKit
 import QuartzCore
 
-// make(lineChart, fillUp: view)
-// fill(view, with: lineChart)
-// size(lineChart, sameWith: view)
-// constraint(lineChart, equalTo: view)
 fileprivate func constraint(_ child: UIView, equalTo parent: UIView) {
   parent.addSubview(child)
   child.translatesAutoresizingMaskIntoConstraints = false
