@@ -32,10 +32,10 @@ class LineChart: UICollectionView {
 
   var maxValue: Float?
 
-  var chunkSize: Int = 10 {
+  var chunkSize: Int = 2 {
     didSet {
-      if chunkSize < 10 {
-        chunkSize = 10
+      if chunkSize < 2 {
+        chunkSize = 2
       }
     }
   }
@@ -120,7 +120,7 @@ class LineChart: UICollectionView {
 
 extension LineChart: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return Int((Float(lines.maxCountOfValues()) / Float(chunkSize)).rounded(.up))
+    return (lines.maxCountOfValues() - chunkSize) / (chunkSize - 1) + 1
   }
 
   func collectionView(_ collectionView: UICollectionView,
@@ -132,17 +132,18 @@ extension LineChart: UICollectionViewDataSource, UICollectionViewDelegateFlowLay
       fatalError("bla bla bla...")
     }
 
-    let start = max(0, indexPath.row * chunkSize - 1)
+    let start = indexPath.row * (chunkSize - 1)
 
     cell.maxValue = maxValue
-    cell.yLabels = Array(start...start+chunkSize)
     cell.values = lines.mapValues { values -> [Float] in
       if start >= values.count {
         return []
       }
 
-      return Array(values.suffix(from: start).prefix(chunkSize + (start == 0 ? 0 : 1)))
+      return Array(values.suffix(from: start).prefix(chunkSize))
     }
+    cell.yLabels = Array(start..<start+cell.values.maxCountOfValues())
+    cell.drawChart()
 
     return cell
   }

@@ -9,11 +9,7 @@ fileprivate extension Dictionary where Value == [Float] {
 }
 
 class LineChartCell: UICollectionViewCell {
-  var values = [String: [Float]]() {
-    didSet {
-      drawChart()
-    }
-  }
+  var values = [String: [Float]]()
 
   var maxValue: Float?
 
