@@ -6,6 +6,19 @@ fileprivate extension Dictionary where Value == [Float] {
       return Swift.max(result, tuple.value.count)
     }
   }
+
+  func maxValue() -> Float? {
+    var maxValue: Float?
+
+    filter { (tuple: (key: Key, value: [Float])) -> Bool in
+      return tuple.value.count > 0
+    }.forEach { (tuple: (key: Key, value: [Float])) in
+      guard let tupleMaxValue = tuple.value.max() else { return }
+      maxValue = Swift.max(maxValue ?? Float.leastNormalMagnitude, tupleMaxValue)
+    }
+
+    return maxValue
+  }
 }
 
 class LineChartLayout: UICollectionViewFlowLayout {}
@@ -13,23 +26,11 @@ class LineChartLayout: UICollectionViewFlowLayout {}
 class LineChart: UICollectionView {
   var lines = [String: [Float]]() {
     didSet {
-      let maxValue = lines.max { lhs, rhs in
-        guard let lhsMax = lhs.value.max() else {
-          return false
-        }
-
-        guard let rhsMax = rhs.value.max() else {
-          return true
-        }
-
-        return lhsMax < rhsMax
-      }?.value.max()
-
-      self.maxValue = maxValue ?? 0
+      maxValue = lines.maxValue()
     }
   }
 
-  var maxValue: Float = 0
+  var maxValue: Float?
 
   var chunkSize: Int = 10 {
     didSet {

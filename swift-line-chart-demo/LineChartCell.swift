@@ -15,7 +15,7 @@ class LineChartCell: UICollectionViewCell {
     }
   }
 
-  var maxValue: Float = 0
+  var maxValue: Float?
 
   var yLabels = [Int]()
 
@@ -48,7 +48,7 @@ class LineChartCell: UICollectionViewCell {
     contentView.layer.sublayers?.forEach { layer in layer.removeFromSuperlayer() }
     contentView.subviews.forEach { view in view.removeFromSuperview() }
 
-    guard !values.isEmpty else {
+    guard !values.isEmpty, let maxValue = maxValue else {
       return
     }
 
