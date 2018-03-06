@@ -5,7 +5,7 @@ class LineChart: UICollectionView {
 
   var maxValue: Float?
 
-  var chunkSize: Int = 2 {
+  var chunkSize: Int = 10 {
     didSet {
       if chunkSize < 2 {
         chunkSize = 2
