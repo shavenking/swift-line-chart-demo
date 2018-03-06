@@ -1,11 +1,7 @@
 import UIKit
 
 class LineChart: UICollectionView {
-  var lines = [String: [Float]]() {
-    didSet {
-      maxValue = lines.maxValue()
-    }
-  }
+  var lines = [String: [Float]]()
 
   var maxValue: Float?
 
@@ -14,8 +10,6 @@ class LineChart: UICollectionView {
       if chunkSize < 2 {
         chunkSize = 2
       }
-
-      reloadData()
     }
   }
 
@@ -58,12 +52,7 @@ class LineChart: UICollectionView {
 // MARK: Convenience init
 extension LineChart {
   convenience init(frame: CGRect = .zero) {
-    let layout = LineChartLayout()
-    layout.scrollDirection = .horizontal
-    layout.minimumInteritemSpacing = 0
-    layout.minimumLineSpacing = 0
-    layout.sectionHeadersPinToVisibleBounds = true
-    self.init(frame: frame, collectionViewLayout: layout)
+    self.init(frame: frame, collectionViewLayout: LineChartLayout())
   }
 }
 
@@ -112,6 +101,21 @@ extension LineChart: UICollectionViewDataSource, UICollectionViewDelegateFlowLay
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
     return CGSize(width: 40, height: 100)
   }
+
+  override func reloadData() {
+    maxValue = lines.maxValue()
+    super.reloadData()
+  }
+
+  override func reloadSections(_ sections: IndexSet) {
+    maxValue = lines.maxValue()
+    super.reloadSections(sections)
+  }
+
+  override func reloadItems(at indexPaths: [IndexPath]) {
+    maxValue = lines.maxValue()
+    super.reloadItems(at: indexPaths)
+  }
 }
 
 // MARK: Gestures
@@ -150,6 +154,8 @@ extension LineChart {
   @objc private func userDidZoom(_ gestureRecognizer: UIPinchGestureRecognizer) {
     if gestureRecognizer.state == .ended {
       chunkSize = Int((CGFloat(chunkSize) / gestureRecognizer.scale).rounded(.up))
+
+      reloadData()
     }
   }
 }

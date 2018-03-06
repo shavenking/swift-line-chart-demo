@@ -32,6 +32,10 @@ class LineChartCell: UICollectionViewCell {
     }
   }
 
+  var pathLayers = [CAShapeLayer]()
+
+  var yLabels = [UILabel]()
+
   private func addPathLayer(points: [CGPoint]) {
     guard points.count > 1, yLabelValues.count > 1 else {
       return
@@ -49,6 +53,7 @@ class LineChartCell: UICollectionViewCell {
       label.textColor = .white
       if label.frame.origin.x >= minimumPosition && label.frame.maxX <= contentView.frame.maxX {
         contentView.addSubview(label)
+        yLabels.append(label)
         minimumPosition += label.frame.width + 8
       }
     }
@@ -67,18 +72,24 @@ class LineChartCell: UICollectionViewCell {
     pathLayer.path = path.cgPath
     pathLayer.add(animation, forKey: "strokeEnd")
     contentView.layer.addSublayer(pathLayer)
+    pathLayers.append(pathLayer)
+  }
+
+  override func prepareForReuse() {
+    pathLayers.forEach { layer in layer.removeFromSuperlayer() }
+    yLabels.forEach { label in label.removeFromSuperview() }
+
+    pathLayers.removeAll()
+    yLabels.removeAll()
+
+    super.prepareForReuse()
   }
 }
 
 // MARK: Public methods
 extension LineChartCell {
   func drawChart() {
-    contentView.layer.sublayers?.forEach { layer in layer.removeFromSuperlayer() }
-    contentView.subviews.forEach { view in view.removeFromSuperview() }
-
-    guard !lines.isEmpty, let maxValue = maxValue else {
-      return
-    }
+    guard !lines.isEmpty, let maxValue = maxValue else { return }
 
     let maxCountOfValues = lines.maxCountOfValues()
     let chartRect = UIEdgeInsetsInsetRect(contentView.frame, UIEdgeInsets(top: 20, left: 0, bottom: 40, right: 0))
