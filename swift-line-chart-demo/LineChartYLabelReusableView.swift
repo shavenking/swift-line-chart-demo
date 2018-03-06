@@ -1,18 +1,15 @@
 import UIKit
 
 class LineChartYLabelReusableView: UICollectionReusableView {
-  var lines: [Float]? {
+  var maxValue: Float? {
     didSet {
-      guard let values = lines?.sorted(), !values.isEmpty else {
-        return
-      }
+      guard let maxValue = maxValue else { return }
 
-      let max = values.max()!
       let chartRect = UIEdgeInsetsInsetRect(frame, UIEdgeInsets(top: 20, left: 0, bottom: 40, right: 0))
-      let step = chartRect.height / CGFloat(max)
+      let step = chartRect.height / CGFloat(maxValue)
       var minimumPosition: CGFloat = chartRect.maxY
 
-      values.forEach {
+      stride(from: 0, through: maxValue.rounded(.up), by: 1).forEach {
         let label = UILabel()
         label.text = "\($0)"
         label.textColor = .white

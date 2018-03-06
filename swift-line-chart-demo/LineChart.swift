@@ -85,7 +85,7 @@ extension LineChart: UICollectionViewDataSource, UICollectionViewDelegateFlowLay
 
   func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
     let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: String(describing: LineChartYLabelReusableView.self), for: indexPath) as! LineChartYLabelReusableView
-    view.lines = Array(Set(lines.values.flatMap { $0 }))
+    view.maxValue = lines.maxValue()
     yLabelView = view
     return view
   }
