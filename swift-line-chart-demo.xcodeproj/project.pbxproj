@@ -14,7 +14,9 @@
 		2DA7A705201977F0004BB61F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2DA7A703201977F0004BB61F /* LaunchScreen.storyboard */; };
 		69D6034F42C092B9B78C2137 /* LineChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D60ADBBED043BE7EB7D9E1 /* LineChart.swift */; };
 		69D605278EAE87C1C9A39DD4 /* LineChartYLabelReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D6050EA618B7283EC3FD78 /* LineChartYLabelReusableView.swift */; };
+		69D60602BB72BE5ACDE40C91 /* LineChartLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D603F4EE586F911801C9A6 /* LineChartLayout.swift */; };
 		69D6071253636103AEDB030D /* LineChartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D60F84E3EE8F38A78180A1 /* LineChartCell.swift */; };
+		69D60ECDE303543702667E13 /* DictionaryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69D6013370488F461F1E1C21 /* DictionaryExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +27,8 @@
 		2DA7A701201977F0004BB61F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2DA7A704201977F0004BB61F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2DA7A706201977F0004BB61F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		69D6013370488F461F1E1C21 /* DictionaryExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryExtension.swift; sourceTree = "<group>"; };
+		69D603F4EE586F911801C9A6 /* LineChartLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChartLayout.swift; sourceTree = "<group>"; };
 		69D6050EA618B7283EC3FD78 /* LineChartYLabelReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChartYLabelReusableView.swift; sourceTree = "<group>"; };
 		69D60ADBBED043BE7EB7D9E1 /* LineChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChart.swift; sourceTree = "<group>"; };
 		69D60F84E3EE8F38A78180A1 /* LineChartCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineChartCell.swift; sourceTree = "<group>"; };
@@ -69,6 +73,8 @@
 				69D60F84E3EE8F38A78180A1 /* LineChartCell.swift */,
 				69D60ADBBED043BE7EB7D9E1 /* LineChart.swift */,
 				69D6050EA618B7283EC3FD78 /* LineChartYLabelReusableView.swift */,
+				69D6013370488F461F1E1C21 /* DictionaryExtension.swift */,
+				69D603F4EE586F911801C9A6 /* LineChartLayout.swift */,
 			);
 			path = "swift-line-chart-demo";
 			sourceTree = "<group>";
@@ -150,6 +156,8 @@
 				69D6071253636103AEDB030D /* LineChartCell.swift in Sources */,
 				69D6034F42C092B9B78C2137 /* LineChart.swift in Sources */,
 				69D605278EAE87C1C9A39DD4 /* LineChartYLabelReusableView.swift in Sources */,
+				69D60ECDE303543702667E13 /* DictionaryExtension.swift in Sources */,
+				69D60602BB72BE5ACDE40C91 /* LineChartLayout.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

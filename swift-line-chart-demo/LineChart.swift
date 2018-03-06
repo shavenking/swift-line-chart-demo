@@ -1,28 +1,5 @@
 import UIKit
 
-fileprivate extension Dictionary where Value == [Float] {
-  func maxCountOfValues() -> Int {
-    return reduce(0) { (result: Int, tuple: (key: Key, value: Value)) -> Int in
-      return Swift.max(result, tuple.value.count)
-    }
-  }
-
-  func maxValue() -> Float? {
-    var maxValue: Float?
-
-    filter { (tuple: (key: Key, value: [Float])) -> Bool in
-      return tuple.value.count > 0
-    }.forEach { (tuple: (key: Key, value: [Float])) in
-      guard let tupleMaxValue = tuple.value.max() else { return }
-      maxValue = Swift.max(maxValue ?? Float.leastNormalMagnitude, tupleMaxValue)
-    }
-
-    return maxValue
-  }
-}
-
-class LineChartLayout: UICollectionViewFlowLayout {}
-
 class LineChart: UICollectionView {
   var lines = [String: [Float]]() {
     didSet {
@@ -37,29 +14,18 @@ class LineChart: UICollectionView {
       if chunkSize < 2 {
         chunkSize = 2
       }
+
+      reloadData()
     }
   }
 
-  override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
-    super.init(frame: frame, collectionViewLayout: layout)
+  lazy var longPressGesture: UILongPressGestureRecognizer = {
+    return UILongPressGestureRecognizer(target: self, action: #selector(userDidLongPress))
+  }()
 
-    dataSource = self
-    delegate = self
-    register(LineChartCell.self, forCellWithReuseIdentifier: String(describing: LineChartCell.self))
-    register(LineChartYLabelReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: String(describing: LineChartYLabelReusableView.self))
-    let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(userDidLongPress))
-    addGestureRecognizer(longPressGesture)
-
-    let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(userDidZoom))
-    addGestureRecognizer(pinchGesture)
-  }
-
-  @objc func userDidZoom(_ gestureRecognizer: UIPinchGestureRecognizer) {
-    if gestureRecognizer.state == .ended {
-      chunkSize = Int((CGFloat(chunkSize) / gestureRecognizer.scale).rounded(.up))
-      self.reloadData()
-    }
-  }
+  lazy var pinchGesture: UIPinchGestureRecognizer = {
+    return UIPinchGestureRecognizer(target: self, action: #selector(userDidZoom))
+  }()
 
   let yPathLayer: CAShapeLayer = {
     let pathLayer = CAShapeLayer()
@@ -73,7 +39,84 @@ class LineChart: UICollectionView {
 
   var yLabelView: LineChartYLabelReusableView?
 
-  @objc func userDidLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+  override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
+    super.init(frame: frame, collectionViewLayout: layout)
+
+    dataSource = self
+    delegate = self
+    register(LineChartCell.self, forCellWithReuseIdentifier: String(describing: LineChartCell.self))
+    register(LineChartYLabelReusableView.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: String(describing: LineChartYLabelReusableView.self))
+    addGestureRecognizer(longPressGesture)
+    addGestureRecognizer(pinchGesture)
+  }
+
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+}
+
+// MARK: Convenience init
+extension LineChart {
+  convenience init(frame: CGRect = .zero) {
+    let layout = LineChartLayout()
+    layout.scrollDirection = .horizontal
+    layout.minimumInteritemSpacing = 0
+    layout.minimumLineSpacing = 0
+    layout.sectionHeadersPinToVisibleBounds = true
+    self.init(frame: frame, collectionViewLayout: layout)
+  }
+}
+
+// MARK: UICollectionView
+extension LineChart: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    return (lines.maxCountOfValues() - chunkSize) / (chunkSize - 1) + 1
+  }
+
+  func collectionView(_ collectionView: UICollectionView,
+                      cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    guard let cell = dequeueReusableCell(
+      withReuseIdentifier: String(describing: LineChartCell.self),
+      for: indexPath
+    ) as? LineChartCell else {
+      fatalError("bla bla bla...")
+    }
+
+    let start = indexPath.row * (chunkSize - 1)
+
+    cell.maxValue = maxValue
+    cell.lines = lines.mapValues { values -> [Float] in
+      if start >= values.count {
+        return []
+      }
+
+      return Array(values.suffix(from: start).prefix(chunkSize))
+    }
+    cell.yLabelValues = Array(start..<start + cell.lines.maxCountOfValues())
+    cell.drawChart()
+
+    return cell
+  }
+
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    return collectionView.frame.size
+  }
+
+  func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+    let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: String(describing: LineChartYLabelReusableView.self), for: indexPath) as! LineChartYLabelReusableView
+    view.lines = Array(Set(lines.values.flatMap { $0 }))
+    yLabelView = view
+    return view
+  }
+
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+    return CGSize(width: 40, height: 100)
+  }
+}
+
+// MARK: Gestures
+extension LineChart {
+  @objc private func userDidLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     var location = gestureRecognizer.location(in: gestureRecognizer.view)
     location = CGPoint(x: max(contentOffset.x + 40 + yPathLayer.lineWidth, location.x), y: min(frame.maxY - 40, location.y))
 
@@ -104,66 +147,14 @@ class LineChart: UICollectionView {
     }
   }
 
-  convenience init(frame: CGRect = .zero) {
-    let layout = LineChartLayout()
-    layout.scrollDirection = .horizontal
-    layout.minimumInteritemSpacing = 0
-    layout.minimumLineSpacing = 0
-    layout.sectionHeadersPinToVisibleBounds = true
-    self.init(frame: frame, collectionViewLayout: layout)
-  }
-
-  required init?(coder aDecoder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
+  @objc private func userDidZoom(_ gestureRecognizer: UIPinchGestureRecognizer) {
+    if gestureRecognizer.state == .ended {
+      chunkSize = Int((CGFloat(chunkSize) / gestureRecognizer.scale).rounded(.up))
+    }
   }
 }
 
-extension LineChart: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return (lines.maxCountOfValues() - chunkSize) / (chunkSize - 1) + 1
-  }
-
-  func collectionView(_ collectionView: UICollectionView,
-                      cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = dequeueReusableCell(
-      withReuseIdentifier: String(describing: LineChartCell.self),
-      for: indexPath
-    ) as? LineChartCell else {
-      fatalError("bla bla bla...")
-    }
-
-    let start = indexPath.row * (chunkSize - 1)
-
-    cell.maxValue = maxValue
-    cell.values = lines.mapValues { values -> [Float] in
-      if start >= values.count {
-        return []
-      }
-
-      return Array(values.suffix(from: start).prefix(chunkSize))
-    }
-    cell.yLabels = Array(start..<start+cell.values.maxCountOfValues())
-    cell.drawChart()
-
-    return cell
-  }
-
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    return collectionView.frame.size
-  }
-
-  func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-    let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: String(describing: LineChartYLabelReusableView.self), for: indexPath) as! LineChartYLabelReusableView
-    view.values = Array(Set(lines.values.flatMap { $0 }))
-    yLabelView = view
-    return view
-  }
-
-  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-    return CGSize(width: 40, height: 100)
-  }
-}
-
+// MARK: Public methods
 extension LineChart {
   func addLine(values: [Float], label: String = UUID().uuidString) {
     self.lines[label] = values

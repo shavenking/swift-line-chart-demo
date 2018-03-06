@@ -1,9 +1,9 @@
 import UIKit
 
 class LineChartYLabelReusableView: UICollectionReusableView {
-  var values: [Float]? {
+  var lines: [Float]? {
     didSet {
-      guard let values = values?.sorted(), !values.isEmpty else {
+      guard let values = lines?.sorted(), !values.isEmpty else {
         return
       }
 

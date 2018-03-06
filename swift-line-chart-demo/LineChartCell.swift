@@ -1,19 +1,11 @@
 import UIKit
 
-fileprivate extension Dictionary where Value == [Float] {
-  func maxCountOfValues() -> Int {
-    return reduce(0) { (result: Int, tuple: (key: Key, value: Value)) -> Int in
-      return Swift.max(result, tuple.value.count)
-    }
-  }
-}
-
 class LineChartCell: UICollectionViewCell {
-  var values = [String: [Float]]()
+  var lines = [String: [Float]]()
 
   var maxValue: Float?
 
-  var yLabels = [Int]()
+  var yLabelValues = [Int]()
 
   var highlightPoint: CGPoint? {
     didSet {
@@ -40,40 +32,15 @@ class LineChartCell: UICollectionViewCell {
     }
   }
 
-  func drawChart() {
-    contentView.layer.sublayers?.forEach { layer in layer.removeFromSuperlayer() }
-    contentView.subviews.forEach { view in view.removeFromSuperview() }
-
-    guard !values.isEmpty, let maxValue = maxValue else {
-      return
-    }
-
-    let maxCountOfValues = values.maxCountOfValues()
-    let chartRect = UIEdgeInsetsInsetRect(contentView.frame, UIEdgeInsets(top: 20, left: 0, bottom: 40, right: 0))
-
-    let step: (x: CGFloat, y: CGFloat) = (
-      x: chartRect.width / CGFloat(maxCountOfValues - 1),
-      y: chartRect.height / CGFloat(maxValue)
-    )
-
-    values.forEach { _, values in
-      var points = [CGPoint]()
-      for (index, value) in values.enumerated() {
-        points.append(CGPoint(x: CGFloat(index) * step.x, y: chartRect.height - CGFloat(value) * step.y + 20))
-      }
-      addPathLayer(points: points)
-    }
-  }
-
   private func addPathLayer(points: [CGPoint]) {
-    guard points.count > 1, yLabels.count > 1 else {
+    guard points.count > 1, yLabelValues.count > 1 else {
       return
     }
 
     let path = UIBezierPath()
     path.move(to: points.first!)
     var minimumPosition: CGFloat = 0.0
-    for (point, yLabel) in zip(points.suffix(from: 1), yLabels.suffix(from: 1)) {
+    for (point, yLabel) in zip(points.suffix(from: 1), yLabelValues.suffix(from: 1)) {
       path.addLine(to: point)
       let label = UILabel()
       label.text = "\(yLabel)"
@@ -100,5 +67,33 @@ class LineChartCell: UICollectionViewCell {
     pathLayer.path = path.cgPath
     pathLayer.add(animation, forKey: "strokeEnd")
     contentView.layer.addSublayer(pathLayer)
+  }
+}
+
+// MARK: Public methods
+extension LineChartCell {
+  func drawChart() {
+    contentView.layer.sublayers?.forEach { layer in layer.removeFromSuperlayer() }
+    contentView.subviews.forEach { view in view.removeFromSuperview() }
+
+    guard !lines.isEmpty, let maxValue = maxValue else {
+      return
+    }
+
+    let maxCountOfValues = lines.maxCountOfValues()
+    let chartRect = UIEdgeInsetsInsetRect(contentView.frame, UIEdgeInsets(top: 20, left: 0, bottom: 40, right: 0))
+
+    let step: (x: CGFloat, y: CGFloat) = (
+      x: chartRect.width / CGFloat(maxCountOfValues - 1),
+      y: chartRect.height / CGFloat(maxValue)
+    )
+
+    lines.forEach { _, values in
+      var points = [CGPoint]()
+      for (index, value) in values.enumerated() {
+        points.append(CGPoint(x: CGFloat(index) * step.x, y: chartRect.height - CGFloat(value) * step.y + 20))
+      }
+      addPathLayer(points: points)
+    }
   }
 }
