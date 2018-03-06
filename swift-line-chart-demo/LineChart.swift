@@ -21,15 +21,7 @@ class LineChart: UICollectionView {
     return UIPinchGestureRecognizer(target: self, action: #selector(userDidZoom))
   }()
 
-  let yPathLayer: CAShapeLayer = {
-    let pathLayer = CAShapeLayer()
-    pathLayer.strokeColor = UIColor.white.cgColor
-    pathLayer.fillColor = UIColor.clear.cgColor
-    pathLayer.lineWidth = 1.5
-    pathLayer.lineJoin = kCALineJoinRound
-    pathLayer.lineCap = kCALineCapRound
-    return pathLayer
-  }()
+  let yPathLayer: CAShapeLayer = PathLayerFactory.make()
 
   var yLabelView: LineChartYLabelReusableView?
 

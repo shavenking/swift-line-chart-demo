@@ -58,19 +58,7 @@ class LineChartCell: UICollectionViewCell {
       }
     }
 
-    let animation = CABasicAnimation(keyPath: "strokeEnd")
-    animation.duration = 0.5
-    animation.fromValue = 0
-    animation.toValue = 1
-
-    let pathLayer = CAShapeLayer()
-    pathLayer.strokeColor = UIColor.white.cgColor
-    pathLayer.fillColor = UIColor.clear.cgColor
-    pathLayer.lineWidth = 1.5
-    pathLayer.lineJoin = kCALineJoinRound
-    pathLayer.lineCap = kCALineCapRound
-    pathLayer.path = path.cgPath
-    pathLayer.add(animation, forKey: "strokeEnd")
+    let pathLayer = PathLayerFactory.make(path: path.cgPath, animation: true)
     contentView.layer.addSublayer(pathLayer)
     pathLayers.append(pathLayer)
   }
