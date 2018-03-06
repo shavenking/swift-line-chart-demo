@@ -58,7 +58,7 @@ class LineChartCell: UICollectionViewCell {
       }
     }
 
-    let pathLayer = PathLayerFactory.make(path: path.cgPath, animation: true)
+    let pathLayer = PathLayerFactory.make(path: path.cgPath, animation: false)
     contentView.layer.addSublayer(pathLayer)
     pathLayers.append(pathLayer)
   }
