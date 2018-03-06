@@ -21,7 +21,7 @@ class LineChart: UICollectionView {
     return UIPinchGestureRecognizer(target: self, action: #selector(userDidZoom))
   }()
 
-  let yPathLayer: CAShapeLayer = PathLayerFactory.make()
+  let highlightPathLayer: CAShapeLayer = PathLayerFactory.make()
 
   var yLabelView: LineChartYLabelReusableView?
 
@@ -114,7 +114,7 @@ extension LineChart: UICollectionViewDataSource, UICollectionViewDelegateFlowLay
 extension LineChart {
   @objc private func userDidLongPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     var location = gestureRecognizer.location(in: gestureRecognizer.view)
-    location = CGPoint(x: max(contentOffset.x + 40 + yPathLayer.lineWidth, location.x), y: min(frame.maxY - 40, location.y))
+    location = CGPoint(x: max(contentOffset.x + 40 + highlightPathLayer.lineWidth, location.x), y: min(frame.maxY - 40, location.y))
 
     if let indexPath = indexPathForItem(at: gestureRecognizer.location(in: self)), let cell = cellForItem(at: indexPath) as? LineChartCell {
       if gestureRecognizer.state == .ended {
@@ -131,14 +131,14 @@ extension LineChart {
     path.addLine(to: CGPoint(x: location.x, y: self.frame.maxY - 40))
     path.move(to: CGPoint(x: contentOffset.x, y: location.y))
     path.addLine(to: CGPoint(x: contentOffset.x + frame.width, y: location.y))
-    yPathLayer.path = path.cgPath
+    highlightPathLayer.path = path.cgPath
 
     if gestureRecognizer.state == .began {
-      self.layer.addSublayer(yPathLayer)
+      self.layer.addSublayer(highlightPathLayer)
     }
 
     if gestureRecognizer.state == .ended {
-      yPathLayer.removeFromSuperlayer()
+      highlightPathLayer.removeFromSuperlayer()
       yLabelView?.highlightPoint = nil
     }
   }
